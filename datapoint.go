@@ -15,6 +15,9 @@ type datapoint struct {
 // create a new 'datapoint' struct based on the given line from the input stream
 func newDatapoint(s string) (*datapoint, error) {
 	decPlaces := 0
+
+	s = strings.Replace(s, ",", "", -1) // remove commas
+
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return nil, err

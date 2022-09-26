@@ -44,36 +44,49 @@ func app(r io.Reader) {
 		var l = scanner.Text()
 		l = strings.TrimSpace(l)
 
-		dp, err := newDatapoint(l)
-		if err != nil {
-			errorCount++
-			continue
-		}
+		if len(l) > 0 {
+			dp, err := newDatapoint(l)
+			if err != nil {
+				errorCount++
+				continue
+			}
 
-		dataL = append(dataL, *dp)
-		sum += dp.cleanFloat
-		if dp.decPlaces > maxDecPlaces {
-			maxDecPlaces = dp.decPlaces
-		}
+			dataL = append(dataL, *dp)
+			sum += dp.cleanFloat
+			if dp.decPlaces > maxDecPlaces {
+				maxDecPlaces = dp.decPlaces
+			}
 
-		if min == nil || dp.cleanFloat < min.cleanFloat {
-			min = dp
-		}
-		if max == nil || dp.cleanFloat > max.cleanFloat {
-			max = dp
+			if min == nil || dp.cleanFloat < min.cleanFloat {
+				min = dp
+			}
+			if max == nil || dp.cleanFloat > max.cleanFloat {
+				max = dp
+			}
 		}
 
 	}
 
-	midpoint := len(dataL) / 2
-
-	m := map[string]string{
-		"Sum":    fmt.Sprintf("%.*f", maxDecPlaces, sum),
-		"Min":    fmt.Sprintf("%s", min.rawString),
-		"Max":    fmt.Sprintf("%s", max.rawString),
-		"Avg":    fmt.Sprintf("%.*f", maxDecPlaces, sum/float64(len(dataL))),
-		"Median": fmt.Sprintf("%s", dataL[midpoint].rawString),
-		"Count":  fmt.Sprintf("%d", len(dataL)),
+	var m map[string]string
+	if len(dataL) > 0 {
+		midpoint := len(dataL) / 2
+		m = map[string]string{
+			"Sum":    fmt.Sprintf("%.*f", maxDecPlaces, sum),
+			"Min":    fmt.Sprintf("%s", min.rawString),
+			"Max":    fmt.Sprintf("%s", max.rawString),
+			"Avg":    fmt.Sprintf("%.*f", maxDecPlaces, sum/float64(len(dataL))),
+			"Median": fmt.Sprintf("%s", dataL[midpoint].rawString),
+			"Count":  fmt.Sprintf("%d", len(dataL)),
+		}
+	} else {
+		m = map[string]string{
+			"Sum":    "0",
+			"Min":    "0",
+			"Max":    "0",
+			"Avg":    "0",
+			"Median": "0",
+			"Count":  "0",
+		}
 	}
 
 	if errorCount > 0 {
