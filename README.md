@@ -29,7 +29,7 @@ Options:
 ## Examples
 
 ```
-$ echo -e "1\n2\n145" | ./statz
+$ echo -e "1\n2\n145" | statz
 Sum:     148
 Min:       1
 Max:     145
